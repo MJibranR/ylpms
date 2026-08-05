@@ -1,19 +1,70 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { getDoc, doc } from "firebase/firestore";
 import { Eye, EyeOff, Mail, Lock, X, CheckCircle2, ArrowLeft } from "lucide-react";
+import { getFirebaseAuth, getFirestoreDb } from "@/lib/firebase";
 
 type ForgotStep = "closed" | "email" | "otp" | "done";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const getRedirectUrlForRole = (role: string | null) => {
+    switch (role?.toLowerCase()) {
+      case "head ro":
+      case "head-of-ro":
+      case "head":
+      case "head ro":
+        return "/Head-of-RO/dashboard";
+      case "sro":
+      case "senior reporting officer":
+        return "/Head-of-RO/sro";
+      case "ro":
+      case "reporting officer":
+        return "/Head-of-RO/ro";
+      case "youth leader":
+      case "youth leader":
+        return "/Head-of-RO/youth-leaders";
+      case "volunteer":
+        return "/Head-of-RO/volunteers";
+      default:
+        return "/Head-of-RO/dashboard";
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Wire up your auth logic here
-    console.log({ email, password });
+    setFormError("");
+    setIsSubmitting(true);
+
+    try {
+      const auth = getFirebaseAuth();
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const uid = userCredential.user.uid;
+      const db = getFirestoreDb();
+      const userDoc = await getDoc(doc(db, "users", uid));
+      const role = userDoc.exists() ? (userDoc.data().role as string | null) : null;
+      router.push(getRedirectUrlForRole(role));
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to sign in. Please check your credentials.";
+      setFormError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // ---- Forgot password flow ----
@@ -248,7 +299,7 @@ export default function LoginPage() {
             Welcome Back
           </h2>
           <p className="text-sm text-gray-500 mb-8">
-            Enter your credentials to access your youth portal
+            Enter your credentials to access the portal for your assigned role.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -317,11 +368,17 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {formError && (
+              <p className="text-sm font-medium text-red-500 mb-2">
+                {formError}
+              </p>
+            )}
             <button
               type="submit"
-              className="w-full rounded-full bg-[#E8622C] py-3 text-sm font-semibold text-white hover:bg-[#d9551f] transition-colors focus:outline-none focus:ring-2 focus:ring-[#E8622C]/50 focus:ring-offset-2"
+              disabled={isSubmitting}
+              className="w-full rounded-full bg-[#E8622C] py-3 text-sm font-semibold text-white hover:bg-[#d9551f] disabled:bg-gray-300 disabled:text-gray-500 transition-colors focus:outline-none focus:ring-2 focus:ring-[#E8622C]/50 focus:ring-offset-2"
             >
-              Sign In
+              {isSubmitting ? "Signing in..." : "Sign In"}
             </button>
           </form>
         </div>
