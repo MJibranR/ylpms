@@ -193,6 +193,12 @@ export default function YLPPageMain() {
             </div>
             <div className="nav-cta">
               <a
+                className="text-sm font-semibold text-white hover:text-gray-200"
+                href="/login"
+              >
+                Sign In
+              </a>
+              <a
                 className="btn btn-primary"
                 href="https://forms.gle/AGwTL41qL55nENdE8"
                 target="_blank"
