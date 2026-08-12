@@ -10,6 +10,8 @@ import {
   FileText,
   Menu,
   X,
+  Book,
+  MessageSquare as Notification,
 } from "lucide-react";
 
 const navItems = [
@@ -17,6 +19,7 @@ const navItems = [
   { label: "Assigned ROs", href: "/SRO/assigned-ros", icon: Users },
   { label: "Tasks", href: "/SRO/tasks", icon: ListChecks },
   { label: "Reports", href: "/SRO/reports", icon: FileText, badge: 2 },
+  { label: "Notifications", href: "/SRO/notifications", icon: Notification, badge: 2 },
 ];
 
 function ChevronRightIcon() {
