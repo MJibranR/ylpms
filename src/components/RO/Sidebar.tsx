@@ -4,22 +4,32 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutGrid,
+  LayoutDashboard,
+  UserCheck,
   Users,
-  ListChecks,
+  Heart,
+  HandHelping,
+  CheckSquare,
+  CalendarDays,
   FileText,
+  BarChart2,
+  Bell,
+  Settings,
+  LogOut,
   Menu,
   X,
-  Book,
-  MessageSquare as Notification,
 } from "lucide-react";
 
 const navItems = [
-  { label: "Dashboard", href: "/SRO/dashboard", icon: LayoutGrid },
-  { label: "Assigned ROs", href: "/SRO/assigned-ros", icon: Users },
-  { label: "Tasks", href: "/SRO/tasks", icon: ListChecks },
-  { label: "Reports", href: "/SRO/reports", icon: FileText, badge: 2 },
-  { label: "Notifications", href: "/SRO/notifications", icon: Notification, badge: 2 },
+  { label: "Dashboard", href: "/RO/dashboard", icon: LayoutDashboard },
+  { label: "Youth Leaders", href: "/RO/youth-leaders", icon: Heart },
+  { label: "Volunteers", href: "/RO/volunteers", icon: HandHelping },
+  { label: "Tasks", href: "/RO/tasks", icon: CheckSquare, badge: 3 },
+  { label: "Events", href: "/RO/events", icon: CalendarDays },
+  { label: "Reports", href: "/RO/reports", icon: FileText, badge: 2 },
+  { label: "Analytics", href: "/RO/analytics", icon: BarChart2 },
+  { label: "Notifications", href: "/RO/notifications", icon: Bell, badge: 3 },
+  { label: "Settings", href: "/RO/settings", icon: Settings },
 ];
 
 function ChevronRightIcon() {
@@ -84,18 +94,18 @@ export default function Sidebar() {
             <Users className="h-5 w-5 text-white" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white leading-tight">YLPMS</p>
-            <p className="text-[11px] text-white/70 leading-tight">SRO Portal</p>
+            <p className="text-sm font-bold text-white leading-tight">
+              RO Portal
+            </p>
+            <p className="text-[11px] text-white/70 leading-tight">
+              Regional Management
+            </p>
           </div>
         </div>
 
-        <p className="px-6 pt-2 pb-2 text-[10px] font-semibold tracking-wider text-white/60">
-          MAIN MENU
-        </p>
-
         <nav className="mt-2 flex-1 space-y-1 px-3">
           {navItems.map((item) => {
-            const active = pathname === item.href;
+            const active = pathname === item.href || pathname?.startsWith(item.href + "/");
             return (
               <Link
                 key={item.label}
@@ -124,12 +134,21 @@ export default function Sidebar() {
 
         <div className="flex items-center gap-3 border-t border-white/15 px-5 py-4">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xs font-bold text-white">
-            SJ
+            JD
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-white truncate">Sarah Johnson</p>
-            <p className="text-[11px] text-white/70 truncate">Senior RO</p>
+            <p className="text-sm font-semibold text-white truncate">
+              Juan Dela Cruz
+            </p>
+            <p className="text-[11px] text-white/70 truncate">Region IV-A Officer</p>
           </div>
+          <button
+            type="button"
+            aria-label="Log out"
+            className="text-white/70 hover:text-white"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
       </aside>
     </>
